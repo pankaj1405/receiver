@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
-const port = 80;
+const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-  res.send('Hello, World! receiver');
+  res.send('Hello, World! sender');
 });
 
 app.listen(port, () => {
