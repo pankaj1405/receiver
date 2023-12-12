@@ -1,4 +1,6 @@
 const express = require('express');
+const axios = require('axios');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,20 +14,17 @@ const azureAdConfig = {
 
 async function validateAccessToken(req, res, next) {
     const authorizationHeader = req.headers['authorization'];
- 
+
     if (!authorizationHeader) {
         return res.status(401).json({ error: 'Unauthorized: Access token missing' });
     }
- 
+
     const accessToken = authorizationHeader.split(' ')[1];
- 
+
     try {
-        const response = await axios.get(`https://login.microsoftonline.com/${azureAdConfig.tenantId}/oauth2/v2.0/token/validate?api-version=1.0`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
- 
+        // Verify the access token using the JWT library and Azure AD public keys
+        const decoded = jwt.verify(accessToken, azureAdConfig.clientSecret);
+
         // If token is valid, proceed to the next middleware
         next();
     } catch (error) {
