@@ -16,7 +16,7 @@ async function validateAccessToken(req, res, next) {
     const authorizationHeader = req.headers['authorization'];
 
     if (!authorizationHeader) {
-        return res.status(401).json({ error: 'Unauthorized: Access token missing' });
+        return res.status(402).json({ error: 'Unauthorized: Access token missing' });
     }
 
     const accessToken = authorizationHeader.split(' ')[1];
