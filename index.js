@@ -10,19 +10,28 @@ const azureAdConfig = {
     clientSecret: 'NJR8Q~KkS4-EIPKtJMEIS5EeHLlCNfBAzH2fmaFc',
 };
 
-// Middleware to validate access token
-function validateAccessToken(req, res, next) {
+async function validateAccessToken(req, res, next) {
     const authorizationHeader = req.headers['authorization'];
+ 
     if (!authorizationHeader) {
         return res.status(401).json({ error: 'Unauthorized: Access token missing' });
     }
-
+ 
     const accessToken = authorizationHeader.split(' ')[1];
-    // Add logic to validate the access token using Azure AD or other means
-    // For simplicity, this example does not perform detailed token validation
-
-    // If token is valid, proceed to the next middleware
-    next();
+ 
+    try {
+        const response = await axios.get(`https://login.microsoftonline.com/${azureAdConfig.tenantId}/oauth2/v2.0/token/validate?api-version=1.0`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+ 
+        // If token is valid, proceed to the next middleware
+        next();
+    } catch (error) {
+        console.error('Error validating access token:', error.message);
+        res.status(401).json({ error: 'Unauthorized: Invalid access token' });
+    }
 }
 
 // Default Response on home
