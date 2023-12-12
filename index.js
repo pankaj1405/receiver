@@ -29,7 +29,7 @@ async function validateAccessToken(req, res, next) {
         next();
     } catch (error) {
         console.error('Error validating access token:', error.message);
-        res.status(401).json({ error: 'Unauthorized: Invalid access token' });
+        res.status(402).json({ error: 'Unauthorized: Invalid access token' });
     }
 }
 
