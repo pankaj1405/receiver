@@ -46,12 +46,12 @@ async function validateAccessToken(req, res, next) {
 
 // Default Response on home
 app.get('/', (req, res) => {
-    res.send('Hello, World! receiver.....');
+    res.send('Hello, World! receiver..!!');
 });
 
 // Handle requests to receive data
 app.get('/api/data', validateAccessToken, (req, res) => {
-    res.json({ message: 'Data from Receiver App' });
+    res.json({ message: 'Data from Receiver App..' });
 });
 
 // Start the receiver app
