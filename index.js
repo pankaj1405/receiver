@@ -22,8 +22,19 @@ async function validateAccessToken(req, res, next) {
     const accessToken = authorizationHeader.split(' ')[1];
 
     try {
-        // Verify the access token using the JWT library and Azure AD public keys
-        const decoded = jwt.verify(accessToken, azureAdConfig.clientSecret);
+        // Decode the access token
+        const decoded = jwt.decode(accessToken, { complete: true });
+
+        // Additional checks if needed (e.g., issuer, audience, expiration)
+        // Example: Check issuer
+        if (decoded.payload.iss !== `https://login.microsoftonline.com/${azureAdConfig.tenantId}/v2.0`) {
+            throw new Error('Invalid issuer');
+        }
+
+        // Example: Check audience
+        if (decoded.payload.aud !== azureAdConfig.clientId) {
+            throw new Error('Invalid audience');
+        }
 
         // If token is valid, proceed to the next middleware
         next();
@@ -35,7 +46,7 @@ async function validateAccessToken(req, res, next) {
 
 // Default Response on home
 app.get('/', (req, res) => {
-  res.send('Hello, World! receiver.....');
+    res.send('Hello, World! receiver.....');
 });
 
 // Handle requests to receive data
